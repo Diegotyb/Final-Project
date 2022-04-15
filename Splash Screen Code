@@ -1,0 +1,134 @@
+ var currentScene = 0;
+var drawHead = function(x, y, bHeight) {
+    fill(8, 6, 6);
+    ellipse(x -10*bHeight/150, y +31*bHeight/150, 62*bHeight/150, 65*bHeight/150);//hood
+    fill(237, 220, 180);
+    ellipse(x -10*bHeight/150, y +32*bHeight/150, 55*bHeight/150, 55*bHeight/150);//head
+    fill(15, 14, 14);
+    ellipse(x -10*bHeight/150, y +10*bHeight/150, 50*bHeight/150, 10*bHeight/150);//hood
+    fill(130, 110, 96);
+    ellipse(x -25*bHeight/150, y +30*bHeight/150, 10*bHeight/150, 10*bHeight/150);//left eye
+    ellipse(x +5*bHeight/150, y +30*bHeight/150, 10*bHeight/150, 10*bHeight/150);//right eye
+    line(x -23*bHeight/150, y +48*bHeight/150, x +2*bHeight/150, y +48*bHeight/150);//mouth
+};
+
+var drawBody = function(x, y, bHeight) {
+    fill(102, 96, 96);
+    rect(x -35*bHeight/150, y +60*bHeight/150, 50*bHeight/150, 65*bHeight/150);//body
+    noFill();
+    line(x -20*bHeight/150, y +80*bHeight/150, x -30*bHeight/150, y +80*bHeight/150);   //intitial I (top line)
+    line(x -25*bHeight/150, y +96*bHeight/150, x -25*bHeight/150, y +82*bHeight/150); //initial I (mid line)
+    line(x -20*bHeight/150, y +98*bHeight/150, x -30*bHeight/150, y +98*bHeight/150); //initial I (bottom line)
+    line(x -10*bHeight/150, y +98*bHeight/150, x -10*bHeight/150, y +80*bHeight/150); //initial P (straight line)
+    arc(x -9*bHeight/150, y +84*bHeight/150, 10*bHeight/150, 10*bHeight/150, 270, 450); //inital P (curve)
+};
+
+var drawBitmoj = function (xpos, ypos, bHeight) {
+    drawHead(xpos, ypos, bHeight);
+    drawBody(xpos, ypos, bHeight);
+};
+//End Izik Bitmoji
+
+
+var drawBitmoji = function (x,y,bitmojiHeight)
+{
+noStroke();
+fill(210, 153, 108);
+ellipse(x, y, bitmojiHeight/100*93,bitmojiHeight/100*100); //head
+fill(255, 255, 255);
+
+
+
+fill(31, 7, 7); //black hair
+
+quad(x-(bitmojiHeight/100*48),y-(bitmojiHeight/100*2),x-(bitmojiHeight/100*37),y-(bitmojiHeight/100*32),x-(bitmojiHeight/100*8),y-(bitmojiHeight/100*50),x-(bitmojiHeight/100*30),y-(bitmojiHeight/100*1)); //left hair
+
+quad(x+(bitmojiHeight/100*49),y-(bitmojiHeight/100*1),x+(bitmojiHeight/100*38),y-(bitmojiHeight/100*34),x+(bitmojiHeight/100*18),y-(bitmojiHeight/100*49),x+(bitmojiHeight/100*32),y-(bitmojiHeight/100*2)); //right hair
+stroke(56, 14, 14);
+
+ellipse(x,y-(bitmojiHeight/100*37),bitmojiHeight/100*62,bitmojiHeight/100*28); //top of hair
+
+fill(247, 242, 242); //right eye fill
+
+ellipse(x-(bitmojiHeight/100*11),y+(bitmojiHeight/100*1),bitmojiHeight/100*9,bitmojiHeight/100*9); //right eye
+
+ellipse(x+(bitmojiHeight/100*17),y+(bitmojiHeight/100*1),bitmojiHeight/100*9,bitmojiHeight/100*9); //left eye
+fill(212, 155, 112); //nose fill 
+
+bezier(x+(bitmojiHeight/100*2),y-(bitmojiHeight/100*1),x+(bitmojiHeight/100*24),y+(bitmojiHeight/100*27),x-(bitmojiHeight/100*8),y+(bitmojiHeight/100*13),x+(bitmojiHeight/100*1),y+(bitmojiHeight/100*15)); //nose
+fill(255,255,255); //white fill for teeth
+
+arc(x+(bitmojiHeight/100*3),y+(bitmojiHeight/100*25),bitmojiHeight/100*30,bitmojiHeight/100*15,1,180); //mouth
+
+line(x-(bitmojiHeight/100*14),y+(bitmojiHeight/100*24),x+(bitmojiHeight/100*20),y+(bitmojiHeight/100*24)); //top of mouth
+fill(18, 9, 9);
+
+quad(x+(bitmojiHeight/100*52), y+(bitmojiHeight/100*50), x+(bitmojiHeight/100*90), y+(bitmojiHeight/100*110), x-(bitmojiHeight/100*66), y+(bitmojiHeight/100*109), x-(bitmojiHeight/100*46), y+(bitmojiHeight/100*51));
+
+fill(224, 224, 224);
+
+textSize(bitmojiHeight/101*40);
+text("D R", x-(bitmojiHeight/129*30), y+(bitmojiHeight/156*92));
+};
+
+var Button = function(config) { //Constructor = creates new buttons when called as new.
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+}; // The || is an 'or' identifier that sets the value as the shown number if nothing is passed in for the "this.something"
+
+Button.prototype.draw = function() { 
+    fill(0, 234, 255);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() { //Class that checks to see if the mouse is clicked inside the created button.
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() { //Calls the onClick function
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+
+var startButton = new Button({ //creates a new button instance with the name 'startButton'
+    x: 125,
+    y: 198,
+    label: "Please click!",
+    onClick: function() {
+        currentScene = 1;
+    }
+});
+
+mouseClicked = function() { //Combined old function "mouse release" into mouseClicked. If the current scene = 0, then it displays the splash screen and only the button click will work, not the add label code. 
+    if (currentScene === 0) {
+    startButton.handleMouseClick();
+    }
+    else { 
+        background(255, 0, 0);
+     
+    }
+};
+
+var splashScreen = function() {
+    background(136, 232, 192);
+    textSize(30);
+    text ("Final Project", 120, 150);
+    drawBitmoj(312, 310, 85);
+    startButton.draw();
+    
+};
+
+splashScreen();
+    drawBitmoji(125,310,64);
