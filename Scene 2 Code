@@ -1,0 +1,195 @@
+var gate = function() { //Gate background
+    for (var i = 0; i < 4; i++) { 
+        fill(112, 99, 11);
+        rect(150 +30 *i, 260, 6, 98);
+        for (var j = 0; j < 4; j++) { 
+            fill(112, 99, 11);
+            rect(150, 265 +27*i, 96, 6);
+        }
+    }
+};
+var clouds = function() { //Clouds background
+    noStroke();
+    fill(255, 255, 255);
+    ellipse(92,35,46,35);//clouds
+    ellipse(110,49,46,35);
+    ellipse(71,49,46,35);
+    ellipse(79,70,46,35);
+    ellipse(103,70,46,35);
+    ellipse(266,35,46,35);
+    ellipse(246,49,46,35);
+    ellipse(287,49,46,35);
+    ellipse(251,70,46,35);
+    ellipse(286,70,46,35);
+    fill(255, 255, 0);
+    ellipse(365,25,40,37);// sun
+};
+var walls = function() { 
+    noStroke();
+    fill(255, 0, 0);
+    triangle(249,95,200,109,200,69);//flag
+    fill(92, 51, 0);
+    rect(200,108,9,69);//flagpole
+    fill(168, 168, 168);
+    rect(0,138,86,219);//Wall left
+    rect(86, 265, 64, 92);//Wall left fill
+    rect(315,138,86,219);//Wall right
+    rect(246, 265, 69, 92);//Wall right fill
+    rect(85,177,230,88);//Wall center
+};
+
+//Castle Scene 1
+var castleBackground1 = function() { 
+    image(getImage("cute/StoneBlock"), 0, 335, 400, 70);
+    clouds(); //Clouds & sun
+    walls();//walls & flag
+    gate(); //Gate
+};
+
+//Sword Item 
+var sword = function(swordX, swordY, swordH) {
+stroke(218, 214, 45);
+strokeWeight(2);
+line(swordX + 17*swordH/58, swordY - 15*swordH/66, swordX + 5*swordH/58, swordY - 10*swordH/58); //Sword handle
+strokeWeight(2.5);
+stroke(133, 130, 130);
+line(swordX + 18*swordH/58, swordY - 8*swordH/58, swordX + 15*swordH/58, swordY - 18*swordH/58);//Sword hilt
+strokeWeight(4);
+stroke(255, 255, 255);
+line(swordX + 18*swordH/58, swordY - 14*swordH/58, swordX + 38*swordH/58, swordY - 19*swordH/58);//sword blade
+};
+
+var sworButton = function(config) { //Constructor = creates new buttons when called as new.
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 50;
+    this.height = config.height || 15;
+    this.label = config.label || "";
+    this.onClick = config.onClick || function() {};
+}; // The || is an 'or' identifier that sets the value as the shown number if nothing is passed in for the "this.something" 
+
+sworButton.prototype.draw = function() { 
+    noFill();
+    noStroke();
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+sworButton.prototype.isMouseInside = function() { //Class that checks to see if the mouse is clicked inside the created button.
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+sworButton.prototype.handleMouseClick = function() { //Calls the onClick function
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+//End sword button class 
+
+var gameButton = new sworButton({ //button instance with the name gameButton
+    x: 20,
+    y: 326,
+    label: "",
+    onClick: function() {
+        item += 1; //increases GV 'item' by 1 when clicked
+    }
+});
+
+var escapeButton = new sworButton({ //button instance with the name escapeButton
+    x: 150,
+    y: 270,
+    width: 95, 
+    height: 85,
+    label: "",
+    onClick: function() {
+        if (treasure === 0) { } //Changes what button click does if GV 'treasure' is more than 0
+        else { currentScene += 2; }
+    }
+});
+
+var Player = function(x, y) { //Creates Player Class
+    this.x = x;
+    this.y = y;
+    this.img = getImage("cute/CharacterHornGirl");
+};
+
+Player.prototype.draw = function() { //Function that draws the Player and limits movement. 
+    image(getImage("cute/CharacterHornGirl"), this.x, this.y, 60, 100);
+    if (item === 0) { 
+        this.x = constrain(this.x, 5, 150); //Restricts movement until gameButton is pressed
+    } 
+    else {
+        this.x = constrain(this.x, 5, 360); //Stops player from going off screen
+        sword(this.x + 31, this.y + 89, 64);
+    }
+};
+
+Player.prototype.moveLeft = function() { //Lets player move left
+    this.img = getImage("cute/CharacterHornGirl");
+    this.x -= 1;
+    sword();
+};
+
+Player.prototype.moveRight = function() { //Lets player move right
+    this.img = getImage("cute/CharacterHornGirl");
+    this.x+= 1;
+    sword();
+};
+
+var Char = new Player(105, 295);
+var CharLeft = new Player(20, 295);
+//END PLAYER CHAR' CODE
+
+mouseClicked = function() { //Function that handles the buttons and allows them to function as intended 
+    if (currentScene === 0) {
+    startButton.handleMouseClick(); //Button works if scene = 0
+    }
+    else if (currentScene === 1) { 
+        if (Char.x < 35 && Char.x > 0) { //Button works if scene = 1 and Char is within specified .x
+            gameButton.handleMouseClick();
+        }
+        if (treasure === 1) { //Button works if scene = 1 and treasure = 1
+            escapeButton.handleMouseClick();
+        }
+    }
+    else if (currentScene === 2 && CharLeft.x < 360 && CharLeft.x > 275) { 
+        chestButton.handleMouseClick(); //Works if scene = 2 and Char is in specified .x
+    }
+};
+
+//START SCENE CODE
+var splashScreen = function() { //Creates the starting screen
+    background(136, 232, 192);
+    fill(242, 3, 3);
+    textSize(30);
+    text ("Final Project", 120, 150);
+    drawBitmoj(312, 300, 110);
+    startButton.draw();
+    drawBitmoji(125,310,64);
+};
+
+var gameScene1 = function() { //Creates the 1st scene
+    background(15, 191, 255);
+    castleBackground1();
+    
+    if (item === 0) {
+    sword(20, 350, 64);
+    gameButton.draw();
+    }
+    
+    if (knight === 1) { //Draws 'obstacle' as long as knight value = 1
+        if (Char.x < 149 || item === 0) {
+            noStroke();
+            image(getImage("avatars/leafers-ultimate"), 175, 280, 80, 100);
+        }
+        else if (Char.x > 149 && item === 1) { //Decreases knight value to 0 if gameButton has been pressed and player passes specified x position
+            knight -= 1; 
+        }
+    }
+};
