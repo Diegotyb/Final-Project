@@ -1,0 +1,442 @@
+var currentScene = 0;
+var item = 0;
+var knight = 1;
+var treasure = 0;
+var movement = [-200];
+
+var gate = function() { //Gate background
+    for (var i = 0; i < 4; i++) { 
+        fill(112, 99, 11);
+        rect(150 +30 *i, 260, 6, 98);
+        for (var j = 0; j < 4; j++) { 
+            fill(112, 99, 11);
+            rect(150, 265 +27*i, 96, 6);
+        }
+    }
+};
+var clouds = function(x) { //Clouds background
+    noStroke();
+    fill(255, 255, 0);
+    ellipse(365,25,40,37);// sun
+    fill(255, 255, 255);
+    ellipse(x-8,35,46,35);//clouds
+    ellipse(x+10,49,46,35);
+    ellipse(x-29,49,46,35);
+    ellipse(x-21,70,46,35);
+    ellipse(x+3,70,46,35);
+    ellipse(x+166,35,46,35);
+    ellipse(x+146,49,46,35);
+    ellipse(x+187,49,46,35);
+    ellipse(x+151,70,46,35);
+    ellipse(x+186,70,46,35);
+};
+var walls = function() { 
+    noStroke();
+    fill(255, 0, 0);
+    triangle(249,95,200,109,200,69);//flag
+    fill(92, 51, 0);
+    rect(200,108,9,69);//flagpole
+    fill(168, 168, 168);
+    rect(0,138,86,219);//Wall left
+    rect(86, 265, 64, 92);//Wall left fill
+    rect(315,138,86,219);//Wall right
+    rect(246, 265, 69, 92);//Wall right fill
+    rect(85,177,230,88);//Wall center
+};
+
+//Castle Scene 1
+var castleBackground1 = function() { 
+    image(getImage("cute/StoneBlock"), 0, 335, 400, 70);
+    walls();//walls & flag
+    gate(); //Gate
+    
+    for (var i = 0; i < 1; i++) { //creates scrolling clouds
+        clouds(movement[0]);
+        movement[0] += 0.5;
+        if (movement[0] > 450) {
+            movement[0] = -200;
+        }
+    }
+};
+
+//Castle Scene 2
+var castleBackground2 = function() { 
+    image(getImage("cute/StoneBlock"), 0, 335, 400, 70);
+    walls(); //Walls and flag
+    rect(150, 265, 97, 92);
+    image(getImage("cute/Star"),20,6,25,40);
+    image(getImage("cute/Star"),79,41,25,40);
+    image(getImage("cute/Star"),124,3,25,40);
+    image(getImage("cute/Star"),214,6,25,40);
+    image(getImage("cute/Star"),254,34,25,40);
+};
+
+//Sword Item 
+var sword = function(swordX, swordY, swordH) {
+stroke(218, 214, 45);
+strokeWeight(2);
+line(swordX + 17*swordH/58, swordY - 15*swordH/66, swordX + 5*swordH/58, swordY - 10*swordH/58); //Sword handle
+strokeWeight(2.5);
+stroke(133, 130, 130);
+line(swordX + 18*swordH/58, swordY - 8*swordH/58, swordX + 15*swordH/58, swordY - 18*swordH/58);//Sword hilt
+strokeWeight(4);
+stroke(255, 255, 255);
+line(swordX + 18*swordH/58, swordY - 14*swordH/58, swordX + 38*swordH/58, swordY - 19*swordH/58);//sword blade
+};
+
+
+//START Izik BITMOJI
+var drawHead = function(x, y, bHeight) {
+    fill(8, 6, 6);
+    ellipse(x -10*bHeight/150, y +31*bHeight/150, 62*bHeight/150, 65*bHeight/150);//hood
+    fill(237, 220, 180);
+    ellipse(x -10*bHeight/150, y +32*bHeight/150, 55*bHeight/150, 55*bHeight/150);//head
+    fill(15, 14, 14);
+    ellipse(x -10*bHeight/150, y +10*bHeight/150, 50*bHeight/150, 10*bHeight/150);//hood
+    fill(130, 110, 96);
+    ellipse(x -25*bHeight/150, y +30*bHeight/150, 10*bHeight/150, 10*bHeight/150);//left eye
+    ellipse(x +5*bHeight/150, y +30*bHeight/150, 10*bHeight/150, 10*bHeight/150);//right eye
+    line(x -23*bHeight/150, y +48*bHeight/150, x +2*bHeight/150, y +48*bHeight/150);//mouth
+};
+
+var drawBody = function(x, y, bHeight) {
+    fill(102, 96, 96);
+    rect(x -35*bHeight/150, y +60*bHeight/150, 50*bHeight/150, 65*bHeight/150);//body
+    noFill();
+    line(x -20*bHeight/150, y +80*bHeight/150, x -30*bHeight/150, y +80*bHeight/150);   //intitial I (top line)
+    line(x -25*bHeight/150, y +96*bHeight/150, x -25*bHeight/150, y +82*bHeight/150); //initial I (mid line)
+    line(x -20*bHeight/150, y +98*bHeight/150, x -30*bHeight/150, y +98*bHeight/150); //initial I (bottom line)
+    line(x -10*bHeight/150, y +98*bHeight/150, x -10*bHeight/150, y +80*bHeight/150); //initial P (straight line)
+    arc(x -9*bHeight/150, y +84*bHeight/150, 10*bHeight/150, 10*bHeight/150, 270, 450); //inital P (curve)
+};
+
+var drawBitmoj = function (xpos, ypos, bHeight) {
+    drawHead(xpos, ypos, bHeight);
+    drawBody(xpos, ypos, bHeight);
+};
+//End Izik Bitmoji
+
+//Start Diego Bitmoji
+var drawBitmoji = function (x,y,bitmojiHeight)
+{
+noStroke();
+fill(210, 153, 108);
+ellipse(x, y, bitmojiHeight/100*93,bitmojiHeight/100*100); //head
+fill(255, 255, 255);
+fill(31, 7, 7); //black hair
+
+quad(x-(bitmojiHeight/100*48),y-(bitmojiHeight/100*2),x-(bitmojiHeight/100*37),y-(bitmojiHeight/100*32),x-(bitmojiHeight/100*8),y-(bitmojiHeight/100*50),x-(bitmojiHeight/100*30),y-(bitmojiHeight/100*1)); //left hair
+
+quad(x+(bitmojiHeight/100*49),y-(bitmojiHeight/100*1),x+(bitmojiHeight/100*38),y-(bitmojiHeight/100*34),x+(bitmojiHeight/100*18),y-(bitmojiHeight/100*49),x+(bitmojiHeight/100*32),y-(bitmojiHeight/100*2)); //right hair
+stroke(56, 14, 14);
+
+ellipse(x,y-(bitmojiHeight/100*37),bitmojiHeight/100*62,bitmojiHeight/100*28); //top of hair
+
+fill(247, 242, 242); //right eye fill
+
+ellipse(x-(bitmojiHeight/100*11),y+(bitmojiHeight/100*1),bitmojiHeight/100*9,bitmojiHeight/100*9); //right eye
+
+ellipse(x+(bitmojiHeight/100*17),y+(bitmojiHeight/100*1),bitmojiHeight/100*9,bitmojiHeight/100*9); //left eye
+fill(212, 155, 112); //nose fill 
+
+bezier(x+(bitmojiHeight/100*2),y-(bitmojiHeight/100*1),x+(bitmojiHeight/100*24),y+(bitmojiHeight/100*27),x-(bitmojiHeight/100*8),y+(bitmojiHeight/100*13),x+(bitmojiHeight/100*1),y+(bitmojiHeight/100*15)); //nose
+fill(255,255,255); //white fill for teeth
+
+arc(x+(bitmojiHeight/100*3),y+(bitmojiHeight/100*25),bitmojiHeight/100*30,bitmojiHeight/100*15,1,180); //mouth
+
+line(x-(bitmojiHeight/100*14),y+(bitmojiHeight/100*24),x+(bitmojiHeight/100*20),y+(bitmojiHeight/100*24)); //top of mouth
+fill(18, 9, 9);
+
+quad(x+(bitmojiHeight/100*52), y+(bitmojiHeight/100*50), x+(bitmojiHeight/100*90), y+(bitmojiHeight/100*110), x-(bitmojiHeight/100*66), y+(bitmojiHeight/100*109), x-(bitmojiHeight/100*46), y+(bitmojiHeight/100*51));
+
+fill(224, 224, 224);
+
+textSize(bitmojiHeight/101*40);
+text("D R", x-(bitmojiHeight/129*30), y+(bitmojiHeight/156*92));
+};
+//END Diego Bitmoji
+
+//Start Button Code for splash Screen 
+var Button = function(config) { //Constructor = creates new buttons when called as new.
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+}; // The || is an 'or' identifier that sets the value as the shown number if nothing is passed in for the "this.something" 
+
+Button.prototype.draw = function() { 
+    fill(0, 234, 255);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() { //Class that checks to see if the mouse is clicked inside the created button.
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() { //Calls the onClick function
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+var Button = function(config) { //Constructor = creates new buttons when called as new.
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+}; // The || is an 'or' identifier that sets the value as the shown number if nothing is passed in for the "this.something" 
+
+Button.prototype.draw = function() { 
+    fill(0, 234, 255);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+Button.prototype.isMouseInside = function() { //Class that checks to see if the mouse is clicked inside the created button.
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+Button.prototype.handleMouseClick = function() { //Calls the onClick function
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+
+var startButton = new Button({ //creates a new button instance with the name 'startButton'
+    x: 125,
+    y: 198,
+    label: "Please click!",
+    onClick: function() {
+        currentScene = 1;
+    }
+});
+// END SPLASH SCREEN BUTTON
+
+//START SWORD BUTTON
+var sworButton = function(config) { //Constructor = creates new buttons when called as new.
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 50;
+    this.height = config.height || 15;
+    this.label = config.label || "";
+    this.onClick = config.onClick || function() {};
+}; // The || is an 'or' identifier that sets the value as the shown number if nothing is passed in for the "this.something" 
+
+sworButton.prototype.draw = function() { 
+    noFill();
+    noStroke();
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+
+sworButton.prototype.isMouseInside = function() { //Class that checks to see if the mouse is clicked inside the created button.
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+sworButton.prototype.handleMouseClick = function() { //Calls the onClick function
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+//End sword button class 
+
+var gameButton = new sworButton({ //button instance with the name gameButton
+    x: 20,
+    y: 326,
+    label: "",
+    onClick: function() {
+        item += 1; //increases GV 'item' by 1 when clicked
+    }
+});
+
+//START CHEST BUTTON 
+var chestButton = new sworButton({ //button instance with the name chestButton
+    x: 320,
+    y: 350,
+    height: 30,
+    label: "",
+    onClick: function() {
+        treasure += 1; //increases GV 'treasure' by 1 when clicked
+    }
+});
+
+//START ESCAPE BUTTON 
+var escapeButton = new sworButton({ //button instance with the name escapeButton
+    x: 150,
+    y: 270,
+    width: 95, 
+    height: 85,
+    label: "",
+    onClick: function() {
+        if (treasure === 0) { } //Changes what button click does if GV 'treasure' is more than 0
+        else { currentScene += 2; }
+    }
+});
+//END BUTTON CODE
+
+//START PLAYER CHAR' CODE
+var Player = function(x, y) { //Creates Player Class
+    this.x = x;
+    this.y = y;
+    this.img = getImage("cute/CharacterHornGirl");
+};
+
+Player.prototype.draw = function() { //Function that draws the Player and limits movement. 
+    image(getImage("cute/CharacterHornGirl"), this.x, this.y, 60, 100);
+    if (item === 0) { 
+        this.x = constrain(this.x, 5, 150); //Restricts movement until gameButton is pressed
+    } 
+    else {
+        this.x = constrain(this.x, 5, 360); //Stops player from going off screen
+        sword(this.x + 31, this.y + 89, 64);
+    }
+};
+
+Player.prototype.moveLeft = function() { //Lets player move left
+    this.img = getImage("cute/CharacterHornGirl");
+    this.x -= 1;
+    sword();
+};
+
+Player.prototype.moveRight = function() { //Lets player move right
+    this.img = getImage("cute/CharacterHornGirl");
+    this.x+= 1;
+    sword();
+};
+
+var Char = new Player(105, 295);
+var CharLeft = new Player(20, 295);
+//END PLAYER CHAR' CODE
+
+mouseClicked = function() { //Function that handles the buttons and allows them to function as intended 
+    if (currentScene === 0) {
+    startButton.handleMouseClick(); //Button works if scene = 0
+    }
+    else if (currentScene === 1) { 
+        if (Char.x < 35 && Char.x > 0) { //Button works if scene = 1 and Char is within specified .x
+            gameButton.handleMouseClick();
+        }
+        if (treasure === 1) { //Button works if scene = 1 and treasure = 1
+            escapeButton.handleMouseClick();
+        }
+    }
+    else if (currentScene === 2 && CharLeft.x < 360 && CharLeft.x > 275) { 
+        chestButton.handleMouseClick(); //Works if scene = 2 and Char is in specified .x
+    }
+};
+
+//START SCENE CODE
+var splashScreen = function() { //Creates the starting screen
+    background(136, 232, 192);
+    fill(242, 3, 3);
+    textSize(30);
+    text ("Final Project", 120, 100);
+    text("Created by Izik and Diego", 35, 145);
+    drawBitmoj(312, 300, 110);
+    startButton.draw();
+    drawBitmoji(125,310,64);
+};
+
+var gameScene1 = function() { //Creates the 1st scene
+    background(15, 191, 255);
+    castleBackground1();
+    drawBitmoj(275, 139, 45);
+    
+    if (item === 0) {
+    sword(20, 350, 64);
+    gameButton.draw();
+    }
+    
+    if (knight === 1) { //Draws 'obstacle' as long as knight value = 1
+        if (Char.x < 149 || item === 0) {
+            noStroke();
+            image(getImage("avatars/leafers-ultimate"), 175, 280, 80, 100);
+        }
+        else if (Char.x > 149 && item === 1) { //Decreases knight value to 0 if gameButton has been pressed and player passes specified x position
+            knight -= 1; 
+        }
+    }
+};
+
+var gameScene2 = function() { //creates the 2nd scene
+    background(47, 68, 99);
+    noStroke();
+    castleBackground2();
+    drawBitmoji(130, 153, 20);
+    
+    if (treasure === 0) { //Shows closed chest while GV 'treasure' = 0
+        image(getImage("cute/ChestClosed"), 335, 337, 40, 40);
+    }
+    else if (treasure === 1) { //Shows open chest and gem if GV 'treasure' = 1
+        image(getImage("cute/GemOrange"), 340, 304, 30, 30);
+        image(getImage("cute/ChestOpen"), 335, 337, 40, 40);
+    }
+    chestButton.draw();
+};
+//END SCENE CODE
+
+draw = function() {
+    if (currentScene === 0) { 
+        splashScreen();
+    }
+    else if (currentScene === 1){ //draws scene 1 and allows movement
+        gameScene1();
+        Char.draw();
+        escapeButton.draw();
+     
+        if (keyIsPressed && keyCode === 37) { 
+            Char.moveLeft();
+        }
+        else if (keyIsPressed && keyCode === 39) { 
+            Char.moveRight();
+        }
+    }
+    else if (currentScene === 2) { //Draws Scene 2 and allows movement
+        gameScene2();
+        CharLeft.draw();
+        
+        if (keyIsPressed && keyCode === 37) { 
+            CharLeft.moveLeft();
+        }
+        else if (keyIsPressed && keyCode === 39) { 
+            CharLeft.moveRight();
+        }
+    }
+    else if (currentScene === 3) { //Draws final scene
+        background(15, 191, 255);
+        image(getImage("cute/CharacterHornGirl"), 178, 295, 40, 60);
+        castleBackground1();
+        fill(0, 255, 68);
+        text("You escaped with the treasure!", 70, 200);
+    }
+    else {}
+    
+    if (currentScene === 1 && Char.x > 360) { //Let's player move to second scene
+        currentScene += 1;
+    }
+    else if (currentScene === 2 && CharLeft.x < 5) { //Lets player go back to previous screen
+        currentScene -= 1;
+    }
+};
